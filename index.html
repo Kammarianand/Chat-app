@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy Glassy Chat App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @keyframes gradient {
+            0% {background-position: 0% 50%;}
+            50% {background-position: 100% 50%;}
+            100% {background-position: 0% 50%;}
+        }
+        .animated-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .message {
+            transition: all 0.3s ease;
+        }
+        .message:hover {
+            transform: scale(1.05);
+        }
+        .typing-indicator::after {
+            content: '...';
+            animation: typing 1s infinite;
+        }
+        @keyframes typing {
+            0% {content: '.';}
+            33% {content: '..';}
+            66% {content: '...';}
+        }
+    </style>
+</head>
+<body class="animated-bg h-screen flex items-center justify-center p-4 overflow-hidden" x-data="chatApp()">
+    <div class="w-full max-w-md glass shadow-lg overflow-hidden"
+         @mousemove="updateGlare($event)">
+        <div class="p-4 border-b border-white/20 flex items-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent glare"
+                 :style="`transform: translateX(${glarePosition}px) translateY(-50%) skew(-45deg); width: 40px; opacity: 0.5;`"></div>
+            <img src="https://i.ibb.co/5BpR9vk/downloadfile-12.jpg" alt="User" class="w-10 h-10 rounded-full mr-3 animate__animated animate__bounceIn">
+            <div>
+                <h2 class="text-white font-semibold">My Sweet Sister</h2>
+                <p class="text-xs text-white/70" x-text="statusMessage"></p>
+            </div>
+            <div class="ml-auto">
+                <button @click="toggleTheme" class="text-white/70 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="h-96 overflow-y-auto p-4 space-y-4" id="messageList">
+            <template x-for="message in messages" :key="message.id">
+                <div :class="`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`">
+                    <div :class="`max-w-xs p-3 rounded-lg message animate__animated animate__fadeIn ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'}`">
+                        <p x-text="message.text"></p>
+                        <div class="text-xs mt-1 text-right" x-show="message.sender === 'user'">
+                            <span x-show="message.status === 'sent'">✓✓</span>
+                            <span x-show="message.status === 'delivered'">✓✓</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div class="p-4 border-t border-white/20">
+            <form @submit.prevent="sendMessage" class="flex">
+                <input type="text" x-model="newMessage" placeholder="Type a message..." 
+                       class="flex-grow p-2 rounded-l-lg focus:outline-none bg-white/10 text-white placeholder-white/50">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition-colors">
+                    Send
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('chatApp', () => ({
+                messages: [],
+                newMessage: '',
+                statusMessage: '🟢 Active',
+                glarePosition: 0,
+                currentMessageIndex: 0,
+                userMessages: [
+    "Hey sis, how's your day?",
+    "Guess what happened today!",
+    "I wrote some code for you.",
+    "😳",
+    "Let's collaborate on some code.",
+    "can you write the CSS code for me?",
+    "sis please stop being rude"
+],
+botMessages: [
+    "Do you ever stop talking?",
+    "Do I look like I care?",
+    "Why would I look at your code?",
+    "😡",
+    "Not interested. Do it alone.",
+    "Why don't you write it yourself?",
+    "I dont care Good Bye"
+],
+                sendMessage() {
+                    if (this.newMessage.trim() === '') return;
+                    
+                    this.addMessage('user', this.newMessage);
+                    const sentMessage = this.newMessage;
+                    this.newMessage = '';
+                    
+                    setTimeout(() => {
+                        this.botReply();
+                    }, 1000);
+                    
+                    this.currentMessageIndex++;
+                    if (this.currentMessageIndex < this.userMessages.length) {
+                        this.typeNextUserMessage();
+                    }
+                },
+                typeNextUserMessage() {
+                    const nextMessage = this.userMessages[this.currentMessageIndex];
+                    let index = 0;
+                    const typeInterval = setInterval(() => {
+                        if (index < nextMessage.length) {
+                            this.newMessage += nextMessage[index];
+                            index++;
+                        } else {
+                            clearInterval(typeInterval);
+                        }
+                    }, 50);
+                },
+                botReply() {
+                    const botMessage = this.botMessages[this.currentMessageIndex - 1];
+                    this.addMessage('bot', botMessage);
+                },
+                addMessage(sender, text) {
+                    const message = {
+                        id: Date.now(),
+                        sender,
+                        text,
+                        status: 'sent'
+                    };
+                    this.messages.push(message);
+                    this.scrollToBottom();
+                    
+                    if (sender === 'user') {
+                        setTimeout(() => {
+                            message.status = 'delivered';
+                        }, 500);
+                    }
+                },
+                scrollToBottom() {
+                    setTimeout(() => {
+                        const messageList = document.getElementById('messageList');
+                        messageList.scrollTop = messageList.scrollHeight;
+                    }, 50);
+                },
+                updateGlare(event) {
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    this.glarePosition = event.clientX - rect.left;
+                },
+                toggleTheme() {
+                    document.body.classList.toggle('dark');
+                },
+                updateStatus() {
+                    const statuses = ['inactive', 'Away', 'Busy chasing mice', 'Napping'];
+                    this.statusMessage = statuses[Math.floor(Math.random() * statuses.length)];
+                },
+                init() {
+                    this.typeNextUserMessage(); // Start typing the first user message
+                    setInterval(() => {
+                        this.updateStatus();
+                    }, 10000);
+                }
+            }))
+        })
+    </script>
+</body>
+</html>

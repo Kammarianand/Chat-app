@@ -3,187 +3,624 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy Glassy Chat App</title>
+    <title>Wolverine - X-Men Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
-        @keyframes gradient {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        body {
+            font-family: 'Orbitron', sans-serif;
+            overflow-x: hidden;
         }
-        .animated-bg {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
+        .claw-cursor {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 100 100"><text y="50%" font-size="90">🗡️</text></svg>'), auto;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid yellow;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
         }
-        .message {
-            transition: all 0.3s ease;
+        .wolverine-image {
+            transition: transform 0.3s ease-out;
         }
-        .message:hover {
+        .wolverine-image:hover {
             transform: scale(1.05);
         }
-        .typing-indicator::after {
-            content: '...';
-            animation: typing 1s infinite;
+        .claw-slash {
+            position: absolute;
+            background: linear-gradient(to right, transparent, yellow, transparent);
+            height: 2px;
+            width: 0;
+            transition: width 0.3s ease;
         }
-        @keyframes typing {
-            0% {content: '.';}
-            33% {content: '..';}
-            66% {content: '...';}
+        .battle-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
         }
+     .x-logo {
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+.loading-progress {
+    width: 0;
+    animation: fill 3s linear forwards;
+}
+
+@keyframes fill {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+/* Quote Carousel */
+#quote-carousel {
+    min-height: 100px;
+}
+
+/* Timeline */
+.timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 2px;
+    background: #FFD700;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+    padding-left: 40px;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 16px;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #FFD700;
+}
+
+.timeline-content {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+/* Rogues Gallery */
+.villain-card {
+    transition: transform 0.3s ease;
+}
+
+.villain-card:hover {
+    transform: scale(1.05);
+}
     </style>
 </head>
-<body class="animated-bg h-screen flex items-center justify-center p-4 overflow-hidden" x-data="chatApp()">
-    <div class="w-full max-w-md glass shadow-lg overflow-hidden"
-         @mousemove="updateGlare($event)">
-        <div class="p-4 border-b border-white/20 flex items-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent glare"
-                 :style="`transform: translateX(${glarePosition}px) translateY(-50%) skew(-45deg); width: 40px; opacity: 0.5;`"></div>
-            <img src="https://i.ibb.co/5BpR9vk/downloadfile-12.jpg" alt="User" class="w-10 h-10 rounded-full mr-3 animate__animated animate__bounceIn">
-            <div>
-                <h2 class="text-white font-semibold">My Sweet Sister</h2>
-                <p class="text-xs text-white/70" x-text="statusMessage"></p>
-            </div>
-            <div class="ml-auto">
-                <button @click="toggleTheme" class="text-white/70 hover:text-white transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </button>
-            </div>
+<body class="claw-cursor min-h-screen bg-gradient-to-br from-blue-900 via-gray-800 to-yellow-900 text-white">
+   <div id="preloader" class="fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <div class="preloader-content text-center">
+        <div class="x-logo text-yellow-400 text-6xl font-bold mb-4">X<small><sub>men</sub></small></div>
+        <div class="loading-bar w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
+            <div class="loading-progress h-full bg-yellow-400 rounded-full"></div>
         </div>
-        <div class="h-96 overflow-y-auto p-4 space-y-4" id="messageList">
-            <template x-for="message in messages" :key="message.id">
-                <div :class="`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`">
-                    <div :class="`max-w-xs p-3 rounded-lg message animate__animated animate__fadeIn ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'}`">
-                        <p x-text="message.text"></p>
-                        <div class="text-xs mt-1 text-right" x-show="message.sender === 'user'">
-                            <span x-show="message.status === 'sent'">✓✓</span>
-                            <span x-show="message.status === 'delivered'">✓✓</span>
+        <p class="loading-text mt-2 text-yellow-400 font-bold">Loading...</p>
+    </div>
+</div>
+
+    <div id="particles-js" class="fixed inset-0 z-0"></div>
+    <div class="relative z-10">
+        <nav class="backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-200 fixed w-full top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <span class="text-2xl font-bold">The Wolverine</span>
                         </div>
                     </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#home" class="hover:text-yellow-400 transition duration-300">Home</a>
+                            <a href="#about" class="hover:text-yellow-400 transition duration-300">About</a>
+                            <a href="#abilities" class="hover:text-yellow-400 transition duration-300">Abilities</a>
+                            <a href="#battles" class="hover:text-yellow-400 transition duration-300">Battles</a>
+                            <a href="#backstory" class="hover:text-yellow-400 transition duration-300">Backstory</a>
+                            <a href="#weapon-x" class="hover:text-yellow-400 transition duration-300">Weapon X</a>
+                        </div>
+                    </div>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-yellow-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </template>
-        </div>
-        <div class="p-4 border-t border-white/20">
-            <form @submit.prevent="sendMessage" class="flex">
-                <input type="text" x-model="newMessage" placeholder="Type a message..." 
-                       class="flex-grow p-2 rounded-l-lg focus:outline-none bg-white/10 text-white placeholder-white/50">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 transition-colors">
-                    Send
-                </button>
-            </form>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                    <a href="#home" class="block hover:text-yellow-400 transition duration-300">Home</a>
+                    <a href="#about" class="block hover:text-yellow-400 transition duration-300">About</a>
+                    <a href="#abilities" class="block hover:text-yellow-400 transition duration-300">Abilities</a>
+                    <a href="#battles" class="block hover:text-yellow-400 transition duration-300">Battles</a>
+                    <a href="#backstory" class="block hover:text-yellow-400 transition duration-300">Backstory</a>
+                    <a href="#weapon-x" class="block hover:text-yellow-400 transition duration-300">Weapon X</a>
+                </div>
+            </div>
+        </nav>
+
+        <header id="home" class="h-screen flex items-center justify-center">
+            <div class="text-center">
+                <h1 class="text-6xl font-bold mb-4 animate__animated animate__fadeInDown">Wolverine</h1>
+                <p class="text-xl animate__animated animate__fadeInUp"></p>
+            </div>
+        </header>
+
+        <section id="about" class="min-h-screen flex items-center justify-center p-8">
+            <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-2xl">
+                <h2 class="text-3xl font-semibold mb-4">About Logan</h2>
+                <p class="mb-4">Born James Howlett, but commonly known as Logan, Wolverine is a mutant with retractable claws, animal-keen senses, and a powerful healing factor that allows him to recover from virtually any wound.</p>
+                <p class="mb-4">Wolverine has lived for over a century, fighting in multiple wars and becoming a crucial member of the X-Men team.</p>
+                <div class="wolverine-image" data-tilt data-tilt-max="25" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.5">
+                    <img src="https://i.ibb.co/g4zz1Td/7e125b0d-1f41-4da2-93da-dd4136dd8b66.jpg" alt="Wolverine Profile" class="rounded-lg shadow-lg w-full">
+                </div>
+            </div>
+        </section>
+
+        <section id="abilities" class="min-h-screen flex items-center justify-center p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+                <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-6" data-tilt>
+                    <h3 class="text-2xl font-semibold mb-2">Healing Factor</h3>
+                    <p>Wolverine can heal from almost any injury at an accelerated rate.</p>
+                    <img src="https://i.ibb.co/SyNPJTc/downloadfile-22.jpg" alt="Healing Factor" class="mt-4 rounded-lg shadow-lg w-full">
+                </div>
+                <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-6" data-tilt>
+                    <h3 class="text-2xl font-semibold mb-2">Adamantium Claws</h3>
+                    <p>Retractable claws coated with indestructible adamantium metal.</p>
+                    <img src="https://i.ibb.co/Wxgn9QG/Designer-4.png" alt="Adamantium Claws" class="mt-4 rounded-lg shadow-lg w-full">
+                </div>
+                <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-6" data-tilt>
+                    <h3 class="text-2xl font-semibold mb-2">Enhanced Senses</h3>
+                    <p>Heightened senses of smell, hearing, and vision.</p>
+                    <img src="https://i.ibb.co/6DQHKKK/Designer-13.png" alt="Enhanced Senses" class="mt-4 rounded-lg shadow-lg w-full">
+                </div>
+                <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-6" data-tilt>
+                    <h3 class="text-2xl font-semibold mb-2">Combat Expertise</h3>
+                    <p>Master of multiple forms of martial arts and weaponry.</p>
+                    <img src="https://i.ibb.co/QpVGLv4/Designer-14.png" alt="Combat Expertise" class="mt-4 rounded-lg shadow-lg w-full">
+                </div>
+            </div>
+        </section>
+
+        <section id="battles" class="min-h-screen flex items-center justify-center p-8">
+            <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-2xl">
+                <h2 class="text-3xl font-semibold mb-4">Notable Battles</h2>
+                <ul class="list-disc list-inside">
+                    <li class="mb-2 cursor-pointer hover:text-yellow-400" onclick="showBattleInfo('sabretooth')">Vs. Sabretooth</li>
+                    <li class="mb-2 cursor-pointer hover:text-yellow-400" onclick="showBattleInfo('magneto')">Vs. Magneto</li>
+                    <li class="mb-2 cursor-pointer hover:text-yellow-400" onclick="showBattleInfo('hulk')">Vs. The Hulk</li>
+                    <li class="mb-2 cursor-pointer hover:text-yellow-400" onclick="showBattleInfo('deadpool')">Vs. Deadpool</li>
+                    <li class="cursor-pointer hover:text-yellow-400" onclick="showBattleInfo('silver-samurai')">Vs. The Silver Samurai</li>
+                </ul>
+                <div id="battleInfo" class="mt-4 hidden">
+                    <h3 id="battleTitle" class="text-2xl font-semibold mb-2"></h3>
+                    <img id="battleImage" class="battle-image" src="" alt="Battle Image">
+                </div>
+            </div>
+        </section>
+
+        <section id="backstory" class="min-h-screen flex items-center justify-center p-8">
+            <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-2xl">
+                <h2 class="text-3xl font-semibold mb-4">Wolverine's Backstory</h2>
+                <p class="mb-4">Born James Howlett in the late 1880s in Alberta, Canada, Wolverine's mutant powers first manifested when he was a boy, after witnessing the death of his father at the hands of the groundskeeper, Thomas Logan.</p>
+                <p class="mb-4">In his grief and anger, James' bone claws emerged for the first time, and he avenged his father by killing Thomas Logan. This traumatic event triggered the onset of his accelerated healing factor and animal-keen senses.</p>
+                <p class="mb-4">Over the next century, James, now going by the name Logan, lived through and fought in multiple wars, including both World Wars and the Vietnam War. His experiences in these conflicts shaped him into the fierce warrior he is today.</p>
+                <p>Logan's life took a dramatic turn when he was selected for the Weapon X program, a clandestine operation that bonded the indestructible metal adamantium to his skeleton and claws, making him virtually indestructible but also subjecting him to immense pain and partial memory loss.</p>
+                <img src="https://i.ibb.co/61SgDZH/downloadfile.jpg" alt="Wolverine Backstory" class="mt-4 rounded-lg shadow-lg w-full">
+            </div>
+        </section>
+
+<section id="timeline" class="min-h-screen flex items-center justify-center p-8">
+    <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-3xl">
+        <h2 class="text-3xl font-semibold mb-4">Wolverine's Timeline</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3 class="text-xl font-bold">1880s</h3>
+                    <p>Born as James Howlett in Alberta, Canada</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3 class="text-xl font-bold">1910s-1940s</h3>
+                    <p>Fights in World War I and World War II</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3 class="text-xl font-bold">1960s</h3>
+                    <p>Joins Team X, a black ops unit</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3 class="text-xl font-bold">1970s</h3>
+                    <p>Undergoes Weapon X program, receives adamantium skeleton</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h3 class="text-xl font-bold">1980s</h3>
+                    <p>Joins the X-Men</p>
+                </div>
+            </div>
         </div>
     </div>
+</section>
+
+
+<section id="rogues-gallery" class="min-h-screen flex items-center justify-center p-8">
+    <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-4xl">
+        <h2 class="text-3xl font-semibold mb-4">Wolverine's Rogues Gallery</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="villain-card" data-villain="sabretooth">
+                <img src="https://i.ibb.co/T14f9Lz/champion-sabretooth-720x720.jpg" alt="Sabretooth" class="w-full h-48 object-cover rounded-t-lg">
+                <div class="p-4 bg-gray-800 rounded-b-lg">
+                    <h3 class="text-xl font-bold mb-2">Sabretooth</h3>
+                    <p class="text-sm">Wolverine's arch-nemesis with similar powers and a savage nature.</p>
+                </div>
+            </div>
+            <div class="villain-card" data-villain="lady-deathstrike">
+                <img src="https://i.ibb.co/J2mJPZj/Screenshot-2024-07-18-21-31-39-72-99c04817c0de5652397fc8b56c3b3817.jpg" alt="Lady Deathstrike" class="w-full h-48 object-cover rounded-t-lg">
+                <div class="p-4 bg-gray-800 rounded-b-lg">
+                    <h3 class="text-xl font-bold mb-2">Lady Deathstrike</h3>
+                    <p class="text-sm">A cybernetically-enhanced assassin with adamantium claws.</p>
+                </div>
+            </div>
+            <div class="villain-card" data-villain="omega-red">
+                <img src="https://i.ibb.co/JBs5nwV/Screenshot-2024-07-18-21-31-28-50-99c04817c0de5652397fc8b56c3b3817.jpg" alt="Omega Red" class="w-full h-48 object-cover rounded-t-lg">
+                <div class="p-4 bg-gray-800 rounded-b-lg">
+                    <h3 class="text-xl font-bold mb-2">Omega Red</h3>
+                    <p class="text-sm">A Russian super-soldier with carbonadium tentacles and a death factor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+        <section id="weapon-x" class="min-h-screen flex items-center justify-center p-8">
+            <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-2xl">
+                <h2 class="text-3xl font-semibold mb-4">Weapon X Program</h2>
+                <p class="mb-4">The Weapon X program was a top-secret government project aimed at creating super-soldiers. Wolverine was one of the primary subjects of this program, which drastically altered his physiology and memories.</p>
+                <p class="mb-4">During the procedure, Wolverine's entire skeleton, including his claws, was bonded with the nearly indestructible metal alloy adamantium. This process was excruciatingly painful and would have killed anyone without Wolverine's healing factor.</p>
+                <p class="mb-4">The program also subjected Wolverine to intense brainwashing and memory implantation techniques, leaving him with fragmented memories and a sense of lost identity.</p>
+                <p>Despite the trauma inflicted by the Weapon X program, it ultimately failed to control Wolverine. He eventually broke free, but the experience left deep physical and psychological scars that continue to haunt him.</p>
+                <img src="https://i.ibb.co/svR1mKt/Screenshot-2024-01-10-12-31-07-63-95dbc2b164ac5249587bf655507ac86b.jpg" alt="Weapon X Program" class="mt-4 rounded-lg shadow-lg w-full">
+            </div>
+        </section>
+    </div>
+<section id="alternate-versions" class="min-h-screen flex items-center justify-center p-8">
+    <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-4xl">
+        <h2 class="text-3xl font-semibold mb-4">Wolverine's Alternate Versions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold mb-2">Old Man Logan</h3>
+                <p class="mb-2">An older, grizzled Wolverine from a dystopian future where villains have won.</p>
+                <img src="https://i.ibb.co/gvfmPzg/portrait-uncanny.jpg" alt="Old Man Logan" class="w-full h-auto rounded-lg">
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold mb-2">Ultimate Wolverine</h3>
+                <p class="mb-2">A reimagined, more ruthless version of Wolverine from the Ultimate Marvel universe.</p>
+                <img src="https://i.ibb.co/6cKHT7W/ultimate-wolverine-1.jpg" alt="Ultimate Wolverine" class="w-full h-auto rounded-lg">
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold mb-2">Weapon X</h3>
+                <p class="mb-2">Wolverine during his time in the Weapon X program, more feral and uncontrolled.</p>
+                <img src="https://i.ibb.co/Z6K45kr/harris-ejaz-14648661-f90a-4b91-ad7c-48ba24c4e6ca.jpg" alt="Weapon X Wolverine" class="w-full h-auto rounded-lg">
+            </div>
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h3 class="text-xl font-bold mb-2">Age of Apocalypse Wolverine</h3>
+                <p class="mb-2">A one-handed Wolverine from an alternate timeline where Apocalypse rules.</p>
+                <img src="https://i.ibb.co/qdLRHKf/Age-of-Apocalype-Weapon-X-Edited.jpg" alt="Age of Apocalypse Wolverine" class="w-full h-auto rounded-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="hugh-jackman-tribute" class="min-h-screen flex items-center justify-center p-8">
+    <div class="backdrop-filter backdrop-blur-lg bg-opacity-30 border border-gray-200 rounded-lg shadow-lg p-8 max-w-4xl">
+        <h2 class="text-3xl font-semibold mb-4">Tribute to Hugh Jackman</h2>
+        <div class="flex flex-col md:flex-row items-center">
+            <img src="https://i.ibb.co/y828FCG/gettyimages-86275261-612x612.jpg" alt="Hugh Jackman as Wolverine" class="w-full md:w-1/2 rounded-lg shadow-lg mb-4 md:mb-0 md:mr-4">
+            <div>
+                <p class="mb-4">For 17 years, Hugh Jackman brought Wolverine to life on the big screen, becoming synonymous with the character for an entire generation of fans.</p>
+                <p class="mb-4">From 2000's "X-Men" to 2017's "Logan," Jackman's dedication to the role was evident in his physical transformation and emotional depth.</p>
+                <p>His portrayal of Wolverine spanned 9 films, making him the actor with the longest career as a live-action Marvel superhero.</p>
+            </div>
+        </div>
+        <div class="mt-8">
+            <h3 class="text-2xl font-semibold mb-2">Hugh Jackman's Wolverine Filmography</h3>
+            <ul class="list-disc list-inside">
+                <li>X-Men (2000)</li>
+                <li>X2: X-Men United (2003)</li>
+                <li>X-Men: The Last Stand (2006)</li>
+                <li>X-Men Origins: Wolverine (2009)</li>
+                <li>X-Men: First Class (2011) - Cameo</li>
+                <li>The Wolverine (2013)</li>
+                <li>X-Men: Days of Future Past (2014)</li>
+                <li>X-Men: Apocalypse (2016) - Cameo</li>
+                <li>Logan (2017)</li>
+                <li>Deadpool & Wolverine (2024) </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/baffle@0.3.6/dist/baffle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('chatApp', () => ({
-                messages: [],
-                newMessage: '',
-                statusMessage: '🟢 Active',
-                glarePosition: 0,
-                currentMessageIndex: 0,
-                userMessages: [
-    "Hey sis, how's your day?",
-    "Guess what happened today!",
-    "I wrote some code for you.",
-    "😳",
-    "Let's collaborate on some code.",
-    "can you write the CSS code for me?",
-    "sis please stop being rude"
-],
-botMessages: [
-    "Do you ever stop talking?",
-    "Do I look like I care?",
-    "Why would I look at your code?",
-    "😡",
-    "Not interested. Do it alone.",
-    "Why don't you write it yourself?",
-    "I dont care Good Bye"
-],
-                sendMessage() {
-                    if (this.newMessage.trim() === '') return;
-                    
-                    this.addMessage('user', this.newMessage);
-                    const sentMessage = this.newMessage;
-                    this.newMessage = '';
-                    
-                    setTimeout(() => {
-                        this.botReply();
-                    }, 1000);
-                    
-                    this.currentMessageIndex++;
-                    if (this.currentMessageIndex < this.userMessages.length) {
-                        this.typeNextUserMessage();
-                    }
-                },
-                typeNextUserMessage() {
-                    const nextMessage = this.userMessages[this.currentMessageIndex];
-                    let index = 0;
-                    const typeInterval = setInterval(() => {
-                        if (index < nextMessage.length) {
-                            this.newMessage += nextMessage[index];
-                            index++;
-                        } else {
-                            clearInterval(typeInterval);
-                        }
-                    }, 50);
-                },
-                botReply() {
-                    const botMessage = this.botMessages[this.currentMessageIndex - 1];
-                    this.addMessage('bot', botMessage);
-                },
-                addMessage(sender, text) {
-                    const message = {
-                        id: Date.now(),
-                        sender,
-                        text,
-                        status: 'sent'
-                    };
-                    this.messages.push(message);
-                    this.scrollToBottom();
-                    
-                    if (sender === 'user') {
-                        setTimeout(() => {
-                            message.status = 'delivered';
-                        }, 500);
-                    }
-                },
-                scrollToBottom() {
-                    setTimeout(() => {
-                        const messageList = document.getElementById('messageList');
-                        messageList.scrollTop = messageList.scrollHeight;
-                    }, 50);
-                },
-                updateGlare(event) {
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    this.glarePosition = event.clientX - rect.left;
-                },
-                toggleTheme() {
-                    document.body.classList.toggle('dark');
-                },
-                updateStatus() {
-                    const statuses = ['inactive', 'Away', 'Busy chasing mice', 'Napping'];
-                    this.statusMessage = statuses[Math.floor(Math.random() * statuses.length)];
-                },
-                init() {
-                    this.typeNextUserMessage(); // Start typing the first user message
-                    setInterval(() => {
-                        this.updateStatus();
-                    }, 10000);
+        // Preloader
+       // Preloader
+window.addEventListener('load', function() {
+    const preloader = document.getElementById('preloader');
+    const loadingText = document.querySelector('.loading-text');
+    let dots = '';
+    
+    // Animate loading text
+    const loadingInterval = setInterval(() => {
+        dots = dots.length < 3 ? dots + '.' : '';
+        loadingText.textContent = 'Loading' + dots;
+    }, 500);
+
+    // Hide preloader after 3 seconds
+    setTimeout(() => {
+        clearInterval(loadingInterval);
+        preloader.style.opacity = '0';
+        preloader.style.transition = 'opacity 0.5s ease';
+        
+        setTimeout(() => {
+            preloader.style.display = 'none';
+        }, 500);
+    }, 3000);
+});
+
+        // Particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                move: { enable: true, speed: 1 }
+            }
+        });
+
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray('section').forEach(section => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
                 }
-            }))
-        })
+            });
+        });
+
+        // Baffle.js Text Effect
+        setTimeout(()=>{
+        const textElements = document.querySelectorAll('h1, h2, h3');
+        textElements.forEach(el => {
+            const b = baffle(el);
+            b.set({
+                characters: '█▓█ ▒░/▒░ █░▒▓/ █▒▒ ▓▒▓/█ ░█▒/ ▒▓░ █<░▒ ▓/░>',
+                speed: 50
+            });
+            b.start();
+            b.reveal(1000);
+        });
+        },3100);
+
+        // Vanilla-tilt.js
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 25,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.5,
+        });
+
+        // Function to show battle information
+        function showBattleInfo(opponent) {
+            const battleInfo = document.getElementById('battleInfo');
+            const battleTitle = document.getElementById('battleTitle');
+            const battleImage = document.getElementById('battleImage');
+
+            // Set title and image based on opponent
+            switch(opponent) {
+                case 'sabretooth':
+                    battleTitle.textContent = 'Wolverine vs Sabretooth';
+                    battleImage.src = 'https://i.ibb.co/hdb9r1X/X-Men-The-Animated-Series-Wolverine-vs-Sabretooth.jpg';
+                    break;
+                case 'magneto':
+                    battleTitle.textContent = 'Wolverine vs Magneto';
+                    battleImage.src = 'https://i.ibb.co/y63fkQb/Screenshot-2024-01-10-18-08-37-63-95dbc2b164ac5249587bf655507ac86b.jpg';
+                    break;
+                case 'hulk':
+                    battleTitle.textContent = 'Wolverine vs Hulk';
+                    battleImage.src = 'https://i.ibb.co/zhPw5Q0/wp8796106-hulk-vs-wolverine-wallpapers.jpg';
+                    break;
+                case 'deadpool':
+                    battleTitle.textContent = 'Wolverine vs Deadpool';
+                    battleImage.src = 'https://i.ibb.co/3mKX0qk/Screenshot-2024-01-11-14-07-25-75-95dbc2b164ac5249587bf655507ac86b.jpg';
+                    break;
+                case 'silver-samurai':
+                    battleTitle.textContent = 'Wolverine vs Silver Samurai';
+                    battleImage.src = 'https://i.ibb.co/3SyKpdT/Screenshot-2024-07-18-22-38-37-11-680d03679600f7af0b4c700c6b270fe7.jpg';
+                    break;
+            }
+
+            battleInfo.classList.remove('hidden');
+        }
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Anime.js animation
+        anime({
+            targets: '.animate__fadeInDown, .animate__fadeInUp',
+            translateY: [-50, 0],
+            opacity: [0, 1],
+            easing: 'easeOutExpo',
+            duration: 1500,
+            delay: anime.stagger(100)
+        });
+
+        // Typed.js effect
+        new Typed('#home p', {
+            strings: ["X-Men's Indestructible Hero", "The Best There Is At What He Does", "Weapon X"],
+            typeSpeed: 50,
+            backSpeed: 25,
+            backDelay: 1500,
+            startDelay: 1000,
+            loop: true,
+            showCursor: false
+        });
+
+        // Scroll reveal effect
+        ScrollReveal().reveal('#about, #abilities, #battles, #backstory, #weapon-x', {
+            delay: 200,
+            distance: '50px',
+            duration: 1000,
+            easing: 'cubic-bezier(0.5, 0, 0, 1)',
+            interval: 200,
+            opacity: 0,
+            origin: 'bottom',
+            reset: true
+        });
+
+        // Custom cursor effect
+        const cursor = document.createElement('div');
+        cursor.className = 'custom-cursor';
+        document.body.appendChild(cursor);
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Claw slash effect
+        document.addEventListener('click', (e) => {
+            const slash = document.createElement('div');
+            slash.className = 'claw-slash';
+            slash.style.left = e.clientX + 'px';
+            slash.style.top = e.clientY + 'px';
+            document.body.appendChild(slash);
+
+            setTimeout(() => {
+                slash.style.width = '100px';
+            }, 10);
+
+            setTimeout(() => {
+                slash.remove();
+            }, 300);
+        });
+
+        // Easter egg: Konami code to trigger a special animation
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    triggerSpecialAnimation();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        function triggerSpecialAnimation() {
+            const wolverineImage = document.createElement('img');
+            wolverineImage.src = 'https://i.ibb.co/RzGLzBC/Designer-21.png';
+            wolverineImage.style.position = 'fixed';
+            wolverineImage.style.bottom = '-100%';
+            wolverineImage.style.left = '50%';
+            wolverineImage.style.transform = 'translateX(-50%)';
+            wolverineImage.style.width = '300px';
+            wolverineImage.style.zIndex = '9999';
+            document.body.appendChild(wolverineImage);
+
+            anime({
+                targets: wolverineImage,
+                bottom: '20%',
+                duration: 1000,
+                easing: 'easeOutBounce',
+                complete: () => {
+                    setTimeout(() => {
+                        anime({
+                            targets: wolverineImage,
+                            opacity: 0,
+                            duration: 1000,
+                            easing: 'easeOutExpo',
+                            complete: () => {
+                                wolverineImage.remove();
+                            }
+                        });
+                    }, 2000);
+                }
+            });
+        }
     </script>
 </body>
 </html>
